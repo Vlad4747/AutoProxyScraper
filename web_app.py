@@ -64,10 +64,6 @@ def create_app() -> tuple[Flask, SocketIO]:
 
     @app.route('/stat')
     def stat():
-        template_path = Path(app.template_folder) / 'stat.html'
-        if not template_path.exists():
-            logger.error("Template stat.html not found")
-            return "Error: Template not found", 500
         return render_template('stat.html')
 
     return app, socketio
