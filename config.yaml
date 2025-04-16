@@ -12,7 +12,7 @@ scraper:
   urls:
     - "https://www.freeproxy.world/?type=http&anonymity=&country=&speed=&port=&page=1"
     - "https://proxycompass.com/ru/free-proxy/"
-    - "https://www.ssl froxies.org/"
+    - "https://www.sslproxies.org/"
     - "https://free-proxy-list.net/"
 database:
   file: "proxies.db"
