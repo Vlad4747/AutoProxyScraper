@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Список Рабочих Прокси - FreeProxiesZlox{% endblock %}
+
+{% block content %}
+    <h2>Добро пожаловать на FreeProxiesZlox</h2>
+    <div class="description-container">
+        <p class="description">На нашем сайте вы найдете актуальный список рабочих HTTP-прокси, которые помогут вам обеспечить анонимность и безопасность в интернете. Мы предоставляем прокси, которые подходят для различных задач, включая обход географических ограничений, защиту вашей конфиденциальности и ускорение загрузки веб-страниц. Наша база данных обновляется регулярно, чтобы гарантировать, что вы получаете только самые надежные и быстрые прокси. Используйте наши инструменты для анализа и выбора подходящих прокси, чтобы улучшить ваш опыт в сети. Мы стремимся предоставить вам лучший сервис и поддержку, чтобы вы могли максимально эффективно использовать наши ресурсы.</p>
+    </div>
+    <a href="/api/proxies" class="json-button" target="_blank">Открыть JSON</a>
+    <h1>Список Рабочих Прокси</h1>
+    <div class="table-container">
+        <table id="proxyTable">
+            <thead>
+                <tr>
+                    <th class="top-left" data-sort="ip_address">IP Адрес</th>
+                    <th data-sort="port">Порт</th>
+                    <th data-sort="type">Тип</th>
+                    <th data-sort="type">Анонимность</th>
+                    <th data-sort="delay_ms">Задержка (мс)</th>
+                    <th data-sort="country">Страна</th>
+                    <th class="top-right" data-sort="Updated">Последнее обновление</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proxy in proxies %}
+                <tr>
+                    <td>{{ proxy.ip_address }}</td>
+                    <td>{{ proxy.port }}</td>
+                    <td>{{ proxy.protocol }}</td>
+                    <td>{{ proxy.anonymity }}</td>
+                    <td>{{ proxy.delay_ms }}</td>
+                    <td>{{ proxy.country }}</td>
+                    <td>{{ proxy.updated_minutes_ago }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        <button class="page-button" id="prevButton">Предыдущая</button>
+        <button class="page-button" id="nextButton">Следующая</button>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const rowsPerPage = 20;
+        let currentPage = 1;
+
+        function displayProxies() {
+            const tableBody = document.querySelector('#proxyTable tbody');
+            const allRows = tableBody.querySelectorAll('tr');
+            allRows.forEach((row, index) => {
+                row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? '' : 'none';
+            });
+        }
+
+        function updateButtons() {
+            const totalRows = document.querySelectorAll('#proxyTable tbody tr').length;
+            document.getElementById('prevButton').disabled = currentPage === 1;
+            document.getElementById('nextButton').disabled = currentPage * rowsPerPage >= totalRows;
+        }
+
+        function sortTable(column) {
+            const tableBody = document.querySelector('#proxyTable tbody');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+            const isAscending = column.classList.contains('asc');
+
+            rows.sort((a, b) => {
+                const aText = a.children[column.cellIndex].textContent;
+                const bText = b.children[column.cellIndex].textContent;
+
+                return isAscending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            });
+
+            rows.forEach(row => tableBody.appendChild(row));
+            column.classList.toggle('asc', !isAscending);
+            column.classList.toggle('desc', isAscending);
+        }
+
+        document.querySelectorAll('#proxyTable th').forEach(header => {
+            header.addEventListener('click', () => {
+                sortTable(header);
+                displayProxies();
+            });
+        });
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayProxies();
+                updateButtons();
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            const totalRows = document.querySelectorAll('#proxyTable tbody tr').length;
+            if (currentPage * rowsPerPage < totalRows) {
+                currentPage++;
+                displayProxies();
+                updateButtons();
+            }
+        });
+
+        displayProxies();
+        updateButtons();
+    </script>
+{% endblock %}
