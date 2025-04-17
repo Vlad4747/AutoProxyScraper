@@ -1,0 +1,7 @@
+aiohttp
+beautifulsoup4
+Flask
+PyYAML
+tqdm
+googletrans
+flask_socketio

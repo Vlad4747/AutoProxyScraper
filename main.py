@@ -7,6 +7,7 @@ import time
 from threading import Thread
 from typing import Dict, Any
 from pathlib import Path
+import random
 
 # Add project root to sys.path for direct execution
 sys.path.append(str(Path(__file__).parent))
@@ -63,6 +64,7 @@ async def process_proxies(config: Dict[str, Any], checker: ProxyChecker, socketi
         backup_proxies = []
 
     all_proxies.extend(new_proxies)
+    all_proxies = random.sample(all_proxies, 700)
     unique_proxies = list({f"{p['ip_address']}:{p['port']}": p for p in all_proxies}.values())
     logger.info(f"Total unique proxies to check: {len(unique_proxies)}")
 
@@ -104,7 +106,7 @@ def main():
         logger.debug("Creating Flask app and SocketIO")
         app, socketio = create_app()
         logger.debug("Starting Flask thread")
-        flask_thread = Thread(target=lambda: socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=False), daemon=True)
+        flask_thread = Thread(target=lambda: socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=False, allow_unsafe_werkzeug=True), daemon=True)
         flask_thread.start()
         
         logger.debug("Running periodic check")

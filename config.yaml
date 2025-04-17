@@ -1,11 +1,11 @@
 proxy:
   test_url: "http://httpbin.org/ip"
-  max_workers: 4
-  request_timeout: 10
+  max_workers: 20
+  request_timeout: 5
   max_delay_ms: 900
-  ttl: 86400  # Proxy validity in seconds (1 day)
+  ttl: 172800  # Proxy validity in seconds (2 day)
   ip_api_concurrency: 45  # Max concurrent IP-API requests
-  test_url: https://api.ipify.org?format=json
+  protocols: ["http", "socks5"]
 scraper:
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
   timeout: 5
@@ -14,6 +14,9 @@ scraper:
     - "https://proxycompass.com/ru/free-proxy/"
     - "https://www.sslproxies.org/"
     - "https://free-proxy-list.net/"
+    - "https://freeproxyupdate.com/http-proxy"
+    - "https://freeproxylists.co/"
+    - "https://proxymist.com/ru/"
 database:
   file: "proxies.db"
 logging:
